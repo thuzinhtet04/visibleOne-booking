@@ -1,0 +1,522 @@
+{
+  "info": {
+    "name": "Backend Auth API",
+    "description": "Better Auth endpoints + protected routes with role-based authorization.\n\n## Setup\n1. Import this collection\n2. Create an environment with variable `baseUrl` = `http://localhost:3000`\n3. Start the server: `npx tsx src/app.ts`\n4. Run requests in order: Sign Up → Sign In → test protected routes\n\n## Roles\n- `user` (default)\n- `admin`\n- `owner`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/ok",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "ok"]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "body": "{\"ok\":true}",
+              "code": 200
+            }
+          ]
+        },
+        {
+          "name": "Sign Up (user role)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('userId', jsonData.user.id);",
+                  "pm.collectionVariables.set('userEmail', jsonData.user.email);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Regular User\",\n  \"email\": \"user@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/sign-up/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "sign-up", "email"]
+            }
+          }
+        },
+        {
+          "name": "Sign Up (admin role)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('adminId', jsonData.user.id);",
+                  "pm.collectionVariables.set('adminEmail', jsonData.user.email);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@test.com\",\n  \"password\": \"password123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/sign-up/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "sign-up", "email"]
+            }
+          }
+        },
+        {
+          "name": "Sign In (user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('userToken', jsonData.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/sign-in/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "sign-in", "email"]
+            }
+          }
+        },
+        {
+          "name": "Sign In (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('adminToken', jsonData.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/sign-in/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "sign-in", "email"]
+            }
+          }
+        },
+        {
+          "name": "Get Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/get-session",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "get-session"]
+            }
+          }
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Origin",
+                "value": "http://localhost:3000"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/sign-out",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "sign-out"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Protected Routes",
+      "item": [
+        {
+          "name": "GET /api/v1/me (any auth)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "me"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/admin (role: admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/owner (role: owner)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/owner",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "owner"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/manager (role: admin|owner)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/manager",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "manager"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Booking",
+      "item": [
+        {
+          "name": "Create Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('bookingId', jsonData.booking.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2026-07-20T09:00:00.000Z\",\n  \"endTime\": \"2026-07-20T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/booking/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "booking", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bookings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.length > 0) {",
+                  "  pm.collectionVariables.set('bookingId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/booking/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "booking", ""]
+            }
+          }
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/booking/{{bookingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "booking", "{{bookingId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking Summary (admin/owner)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/booking/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "booking", "summary"]
+            }
+          },
+          "response": [
+            {
+              "name": "Summary",
+              "code": 200
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.length > 0) {",
+                  "  pm.collectionVariables.set('targetUserId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ""]
+            }
+          }
+        },
+        {
+          "name": "Create User (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"user-2\",\n  \"name\": \"New User\",\n  \"email\": \"newuser@test.com\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "create"]
+            }
+          }
+        },
+        {
+          "name": "Update User Role (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"owner\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{targetUserId}}", "role"]
+            }
+          }
+        },
+        {
+          "name": "Delete User (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{targetUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{targetUserId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "No Auth (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "me"]
+            }
+          }
+        },
+        {
+          "name": "Wrong Role (403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/owner",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "owner"]
+            }
+          },
+          "response": [
+            {
+              "body": "{\"message\":\"Forbidden: insufficient permissions\"}",
+              "code": 403
+            }
+          ]
+        },
+        {
+          "name": "Wrong Password (401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@test.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/sign-in/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "sign-in", "email"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}

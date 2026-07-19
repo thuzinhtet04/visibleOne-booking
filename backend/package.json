@@ -1,0 +1,42 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "npm install && tsc",
+    "seed": "tsx prisma/seed.ts",
+    "start": "tsx src/app.ts",
+    "frontend:install": "npm --prefix ../frontend install",
+    "frontend:build": "npm --prefix ../frontend run build",
+    "frontend": "npm run frontend:install && npm run frontend:build",
+    "prod:build": "npm install && npm run frontend && npx prisma generate && npm run seed",
+    "prod:start": "DATABASE_URL=\"file:./dev.db\" npx prisma migrate deploy && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@better-auth/prisma-adapter": "^1.6.23",
+    "@prisma/adapter-better-sqlite3": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "@types/cors": "^2.8.19",
+    "better-auth": "^1.6.23",
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "prisma": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
